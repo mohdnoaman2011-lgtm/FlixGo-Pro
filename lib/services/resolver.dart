@@ -16,6 +16,7 @@ class VideoFormat {
     required this.ext,
     this.sizeBytes,
     this.audioOnly = false,
+    this.httpHeaders = const {},
   });
 
   final String label; // 720p / 128k ...
@@ -23,6 +24,8 @@ class VideoFormat {
   final String ext;
   final int? sizeBytes;
   final bool audioOnly;
+  /// Headers needed by some public media CDNs (never stores account cookies).
+  final Map<String, String> httpHeaders;
 }
 
 class VideoInfo {
@@ -138,6 +141,9 @@ class BackendResolver implements VideoResolver {
                 ext: '${m['ext'] ?? 'mp4'}',
                 sizeBytes: (m['size'] as num?)?.toInt(),
                 audioOnly: m['audioOnly'] == true,
+                httpHeaders: (m['httpHeaders'] as Map? ?? {}).map(
+                  (k, v) => MapEntry('$k', '$v'),
+                ),
               ))
           .toList();
       if (list.isEmpty) throw ResolveException('لا توجد صيغ متاحة لهذا الرابط');
@@ -162,6 +168,20 @@ class SmartResolver implements VideoResolver {
   SmartResolver() : _dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 15)));
   final Dio _dio;
 
+  String? _platformName(String host) {
+    final h = host.toLowerCase().replaceFirst(RegExp(r'^www\.'), '');
+    if (h == 'youtube.com' || h.endsWith('.youtube.com') || h == 'youtu.be') return 'YouTube';
+    if (h == 'tiktok.com' || h.endsWith('.tiktok.com')) return 'TikTok';
+    if (h == 'instagram.com' || h.endsWith('.instagram.com')) return 'Instagram';
+    if (h == 'facebook.com' || h.endsWith('.facebook.com') || h == 'fb.watch') return 'Facebook';
+    if (h == 'x.com' || h.endsWith('.x.com') || h == 'twitter.com' || h.endsWith('.twitter.com')) return 'X';
+    if (h == 'vimeo.com' || h.endsWith('.vimeo.com')) return 'Vimeo';
+    if (h == 'reddit.com' || h.endsWith('.reddit.com')) return 'Reddit';
+    if (h == 'soundcloud.com' || h.endsWith('.soundcloud.com')) return 'SoundCloud';
+    if (h == 'twitch.tv' || h.endsWith('.twitch.tv')) return 'Twitch';
+    return null;
+  }
+
   @override
   Future<VideoInfo> resolve(String url) async {
     final uri = Uri.tryParse(url);
@@ -173,8 +193,11 @@ class SmartResolver implements VideoResolver {
     } on ResolveException {
       final backend = AppSettings.instance.backendUrl;
       if (backend.isEmpty) {
+        final platform = _platformName(uri.host);
         throw ResolveException(
-          'هذا الرابط يحتاج خادم استخراج. أضف عنوانه من الإعدادات، أو استخدم رابط ملف مباشر.',
+          platform == null
+              ? 'هذا الرابط يحتاج خادم استخراج. أضف عنوانه من الإعدادات، أو استخدم رابط ملف مباشر.'
+              : 'رابط $platform يحتاج خادم استخراج مفعّلاً. أضف عنوان الخادم من الإعدادات. يدعم الخادم الصفحات العامة المتوافقة فقط.',
         );
       }
       return BackendResolver(backend, _dio).resolve(url);
