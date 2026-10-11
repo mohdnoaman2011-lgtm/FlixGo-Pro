@@ -66,7 +66,7 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
             ),
             Expanded(
               child: items.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Text('لا توجد عناصر', style: TextStyle(color: C.muted)),
                     )
                   : ListView.separated(
@@ -129,19 +129,19 @@ class _DownloadCard extends StatelessWidget {
         action = IconButton(
           tooltip: 'استئناف',
           onPressed: () => guarded(() => m.resume(t.id)),
-          icon: const Icon(Icons.play_arrow, color: C.accent),
+          icon: Icon(Icons.play_arrow, color: C.accent),
         );
       case TaskState.failed:
         action = IconButton(
           tooltip: 'إعادة المحاولة',
           onPressed: () => guarded(() => m.resume(t.id)),
-          icon: const Icon(Icons.refresh, color: C.accent),
+          icon: Icon(Icons.refresh, color: C.accent),
         );
       case TaskState.done:
         action = IconButton(
           tooltip: 'حذف',
           onPressed: () => m.delete(t.id),
-          icon: const Icon(Icons.delete_outline, color: C.muted),
+          icon: Icon(Icons.delete_outline, color: C.muted),
         );
     }
 
@@ -165,7 +165,7 @@ class _DownloadCard extends StatelessWidget {
           IconButton(
             tooltip: 'حذف',
             onPressed: () => m.delete(t.id),
-            icon: const Icon(Icons.delete_outline, color: C.muted),
+            icon: Icon(Icons.delete_outline, color: C.muted),
           ),
       ]),
       if (active) ...[
@@ -181,12 +181,12 @@ class _DownloadCard extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text(
             t.progress == null ? fmtBytes(t.received) : '${(t.progress! * 100).round()}%',
-            style: const TextStyle(fontSize: 12, color: C.muted),
+            style: TextStyle(fontSize: 12, color: C.muted),
           ),
           if (t.state == TaskState.running && t.speedBps > 0)
             Text(
               '${fmtSpeed(t.speedBps)}${remaining != null ? ' · متبقي ${fmtEta(remaining)}' : ''}',
-              style: const TextStyle(fontSize: 12, color: C.muted),
+              style: TextStyle(fontSize: 12, color: C.muted),
             ),
         ]),
       ],
