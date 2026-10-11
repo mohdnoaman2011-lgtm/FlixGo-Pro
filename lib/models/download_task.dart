@@ -14,6 +14,7 @@ class DownloadTask {
     this.total = 0,
     this.state = TaskState.queued,
     this.error,
+    this.httpHeaders = const {},
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -24,6 +25,8 @@ class DownloadTask {
   final String ext;
   final bool audioOnly;
   final String path;
+  /// ترويسات HTTP اللازمة لبعض روابط الوسائط العامة، للاستئناف أيضاً.
+  final Map<String, String> httpHeaders;
   final DateTime createdAt;
 
   int received;
@@ -44,6 +47,7 @@ class DownloadTask {
         'ext': ext,
         'audioOnly': audioOnly,
         'path': path,
+        'httpHeaders': httpHeaders,
         'received': received,
         'total': total,
         'state': state.name,
@@ -59,6 +63,9 @@ class DownloadTask {
         ext: j['ext'] as String,
         audioOnly: j['audioOnly'] as bool,
         path: j['path'] as String,
+        httpHeaders: (j['httpHeaders'] as Map? ?? {}).map(
+          (key, value) => MapEntry(key.toString(), value.toString()),
+        ),
         received: (j['received'] as num?)?.toInt() ?? 0,
         total: (j['total'] as num?)?.toInt() ?? 0,
         state: TaskState.values.firstWhere(
