@@ -21,6 +21,10 @@ class SettingsScreen extends StatelessWidget {
             const Align(alignment: AlignmentDirectional.centerStart, child: ScreenTitle('الإعدادات')),
             const SizedBox(height: 16),
             _Group(children: [
+              _ThemeRow(s.themeMode, s.setThemeMode),
+            ]),
+            const SizedBox(height: 16),
+            _Group(children: [
               _ValueRow(
                 title: 'الجودة الافتراضية',
                 subtitle: 'تُطبَّق على كل تحميل جديد إن توفرت',
@@ -58,6 +62,7 @@ class SettingsScreen extends StatelessWidget {
             _Group(children: [
               _SwitchRow('التحميل عبر الواي فاي فقط', s.wifiOnly, s.setWifiOnly),
               _SwitchRow('إشعار عند اكتمال التحميل', s.notify, s.setNotify),
+              _SwitchRow('نسخ الفيديوهات إلى معرض الصور', s.copyToGallery, s.setCopyToGallery),
               _ValueRow(
                 title: 'خادم الاستخراج',
                 subtitle: s.backendUrl.isEmpty ? 'غير مُعدّ — الروابط المباشرة فقط' : s.backendUrl,
@@ -65,7 +70,7 @@ class SettingsScreen extends StatelessWidget {
               ),
             ]),
             const SizedBox(height: 16),
-            const Panel(children: [
+            Panel(children: [
               Text('حقوق المحتوى', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
               Text(
                 'حمّل فقط المحتوى الذي تملك حق استخدامه أو الذي يسمح صاحبه بتنزيله، والتزم بشروط كل منصة.',
@@ -102,7 +107,7 @@ class SettingsScreen extends StatelessWidget {
       builder: (c) => AlertDialog(
         title: const Text('خادم الاستخراج'),
         content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text(
+          Text(
             'عنوان خادم تديره أنت ويحوّل روابط الصفحات إلى روابط ملفات مباشرة. اتركه فارغاً لاستخدام الروابط المباشرة فقط.',
             style: TextStyle(fontSize: 13, color: C.muted, height: 1.6),
           ),
@@ -140,7 +145,7 @@ class _Group extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Column(children: [
         for (var i = 0; i < children.length; i++) ...[
-          if (i > 0) const Divider(height: 1, color: C.border),
+          if (i > 0) Divider(height: 1, color: C.border),
           children[i],
         ],
       ]),
@@ -169,7 +174,7 @@ class _ValueRow extends StatelessWidget {
               Text(subtitle,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 12, color: C.muted)),
+                  style: TextStyle(fontSize: 12, color: C.muted)),
             ]),
           ),
           if (value != null)
@@ -177,10 +182,48 @@ class _ValueRow extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
               decoration: BoxDecoration(color: C.accentTint, borderRadius: BorderRadius.circular(999)),
               child: Text(value!,
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: C.accent)),
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: C.accent)),
             ),
         ]),
       ),
+    );
+  }
+}
+
+class _ThemeRow extends StatelessWidget {
+  const _ThemeRow(this.mode, this.onChanged);
+  final String mode;
+  final Future<void> Function(String) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 12, children: [
+        const Text('المظهر', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+        SizedBox(
+          width: double.infinity,
+          child: SegmentedButton<String>(
+            showSelectedIcon: false,
+            segments: const [
+              ButtonSegment(value: 'dark', icon: Icon(Icons.dark_mode_outlined, size: 18), label: Text('داكن')),
+              ButtonSegment(value: 'light', icon: Icon(Icons.light_mode_outlined, size: 18), label: Text('فاتح')),
+              ButtonSegment(value: 'system', icon: Icon(Icons.brightness_auto_outlined, size: 18), label: Text('تلقائي')),
+            ],
+            selected: {mode},
+            onSelectionChanged: (v) => onChanged(v.first),
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.resolveWith(
+                (st) => st.contains(WidgetState.selected) ? C.accentTint : Colors.transparent,
+              ),
+              foregroundColor: WidgetStateProperty.resolveWith(
+                (st) => st.contains(WidgetState.selected) ? C.accent : C.muted,
+              ),
+              side: WidgetStatePropertyAll(BorderSide(color: C.border2)),
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }
