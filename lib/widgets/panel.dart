@@ -34,7 +34,7 @@ class ScreenTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
         text,
-        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: C.text),
+        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: C.text),
       );
 }
 
