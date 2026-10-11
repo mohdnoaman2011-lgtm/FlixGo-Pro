@@ -1,1 +1,93 @@
 
+name: Build FlixGo
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write # لرفع الملفات إلى صفحة الإصدارات عند وسم v*
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # المشروع يحتوي كود Dart فقط؛ نولّد مجلد android/ إن لم يكن موجوداً
+      - name: Generate android/ folder
+        run: |
+          if [ ! -d android ]; then
+            flutter create --platforms=android --org com.flixgo --project-name flixgo .
+          fi
+
+      - name: Configure Android (permissions, icons, signing)
+        run: python3 tools/setup_android.py
+
+      # توقيع النسخة النهائية (اختياري): أضف الأسرار في Settings → Secrets and variables → Actions
+      #   KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_PASSWORD, KEY_ALIAS
+      # بدونها يُوقَّع الملف بمفتاح التطوير (يصلح للتجربة فقط، لا للنشر في المتجر)
+      - name: Set up release signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > android/app/release.jks
+            {
+              echo "storePassword=$KEYSTORE_PASSWORD"
+              echo "keyPassword=$KEY_PASSWORD"
+              echo "keyAlias=$KEY_ALIAS"
+              echo "storeFile=release.jks"
+            } > android/key.properties
+            echo "Release signing enabled"
+          else
+            echo "No keystore secrets found; using debug signing"
+          fi
+
+      - run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+        continue-on-error: true
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flixgo-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flixgo-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+
+      - name: Attach to GitHub release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
