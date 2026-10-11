@@ -65,16 +65,16 @@ class _LibraryScreenState extends State<LibraryScreen> {
               onChanged: (v) => setState(() => _query = v),
               decoration: InputDecoration(
                 hintText: 'ابحث عن فيديو',
-                prefixIcon: const Icon(Icons.search, color: C.muted),
+                prefixIcon: Icon(Icons.search, color: C.muted),
                 filled: true,
                 fillColor: C.surface,
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: C.border),
+                  borderSide: BorderSide(color: C.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: C.accent),
+                  borderSide: BorderSide(color: C.accent),
                 ),
               ),
             ),
@@ -98,7 +98,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
             ]),
             Expanded(
               child: shown.isEmpty
-                  ? const Center(child: Text('المكتبة فارغة', style: TextStyle(color: C.muted)))
+                  ? Center(child: Text('المكتبة فارغة', style: TextStyle(color: C.muted)))
                   : GridView.builder(
                       itemCount: shown.length,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -129,14 +129,14 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
                               Text('${t.label} · ${fmtBytes(t.total)}',
-                                  style: const TextStyle(fontSize: 12, color: C.muted)),
+                                  style: TextStyle(fontSize: 12, color: C.muted)),
                             ],
                           ),
                         );
                       },
                     ),
             ),
-            const Text('اضغط مطولاً على أي ملف لحذفه.',
+            Text('اضغط مطولاً على أي ملف لحذفه.',
                 style: TextStyle(fontSize: 12, color: C.muted)),
           ]),
         );
