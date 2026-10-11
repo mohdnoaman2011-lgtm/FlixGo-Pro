@@ -15,6 +15,9 @@ class AppSettings extends ChangeNotifier {
   bool get wifiOnly => _p.getBool('wifiOnly') ?? true;
   int get maxConcurrent => _p.getInt('maxConcurrent') ?? 3;
   bool get notify => _p.getBool('notify') ?? true;
+  /// 'dark' | 'light' | 'system' (الافتراضي داكن)
+  String get themeMode => _p.getString('theme') ?? 'dark';
+  bool get copyToGallery => _p.getBool('gallery') ?? false;
 
   /// عنوان خادم الاستخراج الخاص بك (اختياري). مثال: https://example.com
   String get backendUrl => _p.getString('backendUrl') ?? '';
@@ -26,6 +29,16 @@ class AppSettings extends ChangeNotifier {
 
   Future<void> setWifiOnly(bool v) async {
     await _p.setBool('wifiOnly', v);
+    notifyListeners();
+  }
+
+  Future<void> setCopyToGallery(bool v) async {
+    await _p.setBool('gallery', v);
+    notifyListeners();
+  }
+
+  Future<void> setThemeMode(String v) async {
+    await _p.setString('theme', v);
     notifyListeners();
   }
 
