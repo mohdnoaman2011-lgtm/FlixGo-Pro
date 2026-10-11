@@ -1,43 +1,30 @@
-FlixGo — Flutter
-تطبيق أندرويد لتحميل الفيديوهات، بواجهة عربية من اليمين لليسار.
-التشغيل
-المجلد يحتوي كود Dart والأصول فقط، ولا يحتوي مجلد android/. ولّده ثم جهّزه بسكربت جاهز:
-cd flixgo_flutter
-flutter create --platforms=android --org com.flixgo --project-name flixgo .
-python3 tools/setup_android.py
-flutter pub get
-flutter run
-flutter create لا يستبدل lib/ ولا pubspec.yaml. يتطلب Flutter 3.27 أو أحدث.
-السكربت tools/setup_android.py يضبط تلقائياً (ويمكن إعادة تشغيله بأمان):
-الصلاحيات وخدمة الإشعارات الأمامية واسم التطبيق في AndroidManifest.xml.
-desugaring المطلوب لحزمة الإشعارات.
-إعداد توقيع النسخة النهائية من android/key.properties.
-نسخ الأيقونات (android_res/) إلى android/app/src/main/res/: أيقونة تكيفية ودائرية ومتجانسة (أندرويد 13+) وأيقونة الإشعار.
-ما يعمل
-تحليل الرابط: ملفات الوسائط المباشرة (.mp4, .mp3, ...) تعمل مباشرة. روابط الصفحات تحتاج خادم استخراج تديره أنت. الخادم يدعم الصفحات العامة المتوافقة مع yt-dlp لمنصات مثل YouTube وTikTok وInstagram وFacebook وX وVimeo وReddit وSoundCloud وTwitch، عند توفر صيغة قابلة للتنزيل مباشرة.
-طابور تحميل: عدد متزامن قابل للضبط، إيقاف مؤقت واستئناف (يكمل إن دعم الخادم Range)، إعادة المحاولة، حذف.
-تحميل في الخلفية بخدمة أمامية وإشعار تقدم، وإشعار اكتمال أو فشل.
-خيار «الواي فاي فقط».
-نسخ الفيديوهات إلى معرض الصور (ألبوم FlixGo)، اختياري من الإعدادات. النسخة الأصلية تبقى في مجلد التطبيق.
-المكتبة: بحث وتصفية وفتح الملف بالتطبيق الافتراضي وحذف بالضغط المطوّل.
-سجل محفوظ بين مرات التشغيل. الملفات في Android/data/<الحزمة>/files/FlixGo (بلا صلاحيات تخزين).
-حدود معروفة
-دعم المنصات يحتاج تشغيل خادم server/ بعد تثبيت yt-dlp؛ روابط الحسابات الخاصة أو التي تتطلب تسجيل دخول وملفات DRM غير مدعومة، وقد تتغير التوافقية بتغيّر المنصة.
-إغلاق التطبيق بالسحب من قائمة التطبيقات الأخيرة قد يوقف التحميل. عند فتحه تظهر العناصر «متوقفة مؤقتاً» وتستأنفها بضغطة. التحميل الذي يبقى بعد إغلاق التطبيق كلياً يتطلب تنفيذه داخل خدمة أصلية بعزل مستقل (مثل flutter_foreground_task).
-أندرويد 15 يحدّ الخدمات من نوع dataSync بنحو 6 ساعات يومياً.
-النسخ إلى المعرض يشمل الفيديو فقط (لا الصوت) وقد لا يدعم بعض الصيغ، فيبقى الملف في مجلد التطبيق.
-لا توجد صور مصغرة للملفات المحمّلة (تظهر أيقونة)، إلا في معاينة الرابط إن أرجعها الخادم.
-الخط Cairo يُجلب عبر google_fonts عند أول تشغيل؛ ضمّنه كأصل للعمل دون اتصال ولإجابة أنظف في «أمان البيانات».
-لم يُشغَّل المشروع في بيئة بناء (Flutter غير متاح عند كتابته)، فقد تظهر ملاحظات بسيطة عند أول بناء. سكربت الإعداد اختُبر على نماذج لملفات القالب فقط.
-الهيكل
-lib/services/ — resolver.dart (تحليل الروابط)، download_manager.dart (الطابور)، notifier.dart (الإشعارات والخدمة الأمامية)، settings.dart.
-lib/screens/ — الرئيسية، التحميلات، المكتبة، الإعدادات. lib/shell.dart — البداية والتنقل.
-android_res/ — أيقونات أندرويد الجاهزة. tools/ — سكربت الإعداد.
-.github/workflows/main.yml — البناء الآلي. release/ — قائمة فحص النشر وقالب التوقيع. store/ — وصف المتجر (عربي/إنجليزي)، سياسة الخصوصية، أمان البيانات، أيقونة 512 ورسم الميزة.
-design/ — ملفات التصميم الأصلية (HTML). docs/BACKEND.md — واجهة خادم الاستخراج.
-البناء على GitHub (بدون تثبيت Flutter محلياً)
-ارفع المشروع إلى مستودع GitHub على الفرع main؛ يبني الملف .github/workflows/main.yml تلقائياً ملفي APK وAAB ويرفعهما في تبويب Actions تحت Artifacts. عند دفع وسم مثل v1.0.0 يُرفقان أيضاً بصفحة Releases. للتوقيع بمفتاحك أضف الأسرار KEYSTORE_BASE64 (الناتج من base64 -w0 flixgo-release.jks) وKEYSTORE_PASSWORD وKEY_PASSWORD وKEY_ALIAS. بدونها يُوقَّع الملف بمفتاح التطوير للتجربة فقط.
-النشر
-اتبع release/RELEASE_CHECKLIST.md.
-تنبيه
-حمّل فقط المحتوى الذي تملك حق استخدامه، والتزم بشروط كل منصة. سياسات Google Play تمنع التطبيقات التي تسهّل تنزيل محتوى المنصات دون إذن وانتحال العلامات التجارية، فراجعها قبل النشر.
+# FlixGo
+
+## الخادم
+    cd server
+    docker build -t flixgo-server .
+    docker run -p 8000:8000 -v flixgo-data:/data -e API_KEY=غيّرني flixgo-server
+
+متغيرات اختيارية: ALLOWED_DOMAINS (أو `*`)، MAX_CONCURRENT، FILE_TTL_SECONDS،
+MAX_FILESIZE_MB، COOKIES_FILE. فحص الإصدار: GET /api/health
+
+## التطبيق
+    cd app && flutter create . --project-name flixgo --org com.flixgo
+    # انسخ lib/ و pubspec.yaml فوق الموجودين ثم:
+    flutter pub get
+    flutter run --dart-define=API_BASE=http://10.0.2.2:8000 --dart-define=API_KEY=غيّرني
+
+أندرويد: أضف في AndroidManifest.xml
+    <uses-permission android:name="android.permission.INTERNET"/>
+وللتجربة على http بدل https: android:usesCleartextTraffic="true" على <application>.
+
+## إعدادات منصّات إضافية
+- أندرويد (`AndroidManifest.xml`): `INTERNET` و`POST_NOTIFICATIONS`، وللمعرض `WRITE_EXTERNAL_STORAGE` مع `android:maxSdkVersion="29"`.
+- iOS (`Info.plist`): `NSPhotoLibraryAddUsageDescription` لنسخ الفيديو إلى الصور.
+- يتطلب Flutter 3.22 أو أحدث.
+
+## الشعار
+الأصول في `app/assets/`. بعد `flutter pub get` ولّد أيقونة التطبيق وشاشة البداية:
+
+    dart run flutter_launcher_icons
+    dart run flutter_native_splash:create
