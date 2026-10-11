@@ -39,8 +39,8 @@ class ScreenTitle extends StatelessWidget {
 }
 
 /// صورة مصغرة: تعرض الصورة إن وُجدت، وإلا مربعاً بأيقونة.
-class Thumb extends StatelessWidget {
-  const Thumb({
+class MediaThumb extends StatelessWidget {
+  const MediaThumb({
     super.key,
     required this.width,
     required this.height,
