@@ -150,7 +150,7 @@ class _DownloadCard extends StatelessWidget {
 
     return Panel(padding: 14, children: [
       Row(spacing: 12, children: [
-        Thumb(width: 88, height: 56, icon: t.audioOnly ? Icons.music_note : Icons.play_arrow),
+        MediaThumb(width: 88, height: 56, icon: t.audioOnly ? Icons.music_note : Icons.play_arrow),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(t.title,
