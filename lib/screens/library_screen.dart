@@ -118,7 +118,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                             spacing: 8,
                             children: [
                               LayoutBuilder(
-                                builder: (_, c) => Thumb(
+                                builder: (_, c) => MediaThumb(
                                   width: c.maxWidth,
                                   height: 104,
                                   icon: t.audioOnly ? Icons.music_note : Icons.play_arrow,
