@@ -81,6 +81,17 @@ GROOVY_SIGNING = """    signingConfigs {
 """
 
 
+NETWORK_SECURITY = """<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- يسمح بـ HTTP للخادم المحلي على الهاتف فقط؛ بقية الاتصالات تبقى HTTPS -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+</network-security-config>
+"""
+
+
 def log(msg):
     print(msg)
 
@@ -99,6 +110,13 @@ def patch_manifest():
 
     # اسم التطبيق
     text = re.sub(r'(<application[^>]*?android:label=")[^"]*(")', rf"\g<1>{APP_LABEL}\g<2>", text, count=1, flags=re.S)
+
+    # السماح بالاتصال بالخادم المحلي (HTTP) على 127.0.0.1 فقط
+    nsc = RES_DST / "xml" / "network_security_config.xml"
+    nsc.parent.mkdir(parents=True, exist_ok=True)
+    nsc.write_text(NETWORK_SECURITY, encoding="utf-8")
+    if "networkSecurityConfig" not in text:
+        text = re.sub(r"(<application\b)", r'\1 android:networkSecurityConfig="@xml/network_security_config"', text, count=1)
 
     # خدمة الإشعارات
     if "flutterlocalnotifications.ForegroundService" not in text:
