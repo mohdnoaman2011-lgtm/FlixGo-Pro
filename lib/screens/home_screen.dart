@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Panel(children: [
       Row(spacing: 12, children: [
-        Thumb(
+        MediaThumb(
           width: 112,
           height: 72,
           imageUrl: info.thumbnail,
