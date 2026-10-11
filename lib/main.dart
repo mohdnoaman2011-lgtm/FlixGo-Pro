@@ -15,8 +15,55 @@ Future<void> main() async {
   runApp(const FlixGoApp());
 }
 
-class FlixGoApp extends StatelessWidget {
+class FlixGoApp extends StatefulWidget {
   const FlixGoApp({super.key});
+
+  @override
+  State<FlixGoApp> createState() => _FlixGoAppState();
+}
+
+class _FlixGoAppState extends State<FlixGoApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    AppSettings.instance.addListener(_onSettings);
+    _applyMode();
+  }
+
+  @override
+  void dispose() {
+    AppSettings.instance.removeListener(_onSettings);
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // تغيّر مظهر النظام (يهمّ وضع «تلقائي»)
+  @override
+  void didChangePlatformBrightness() => _onSettings();
+
+  void _applyMode() {
+    final mode = AppSettings.instance.themeMode;
+    C.dark = mode == 'system'
+        ? WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark
+        : mode != 'light';
+  }
+
+  void _onSettings() {
+    final before = C.dark;
+    _applyMode();
+    if (before == C.dark) return;
+    setState(() {});
+    // الألوان تُقرأ من C مباشرة، فنُجبر كل الويدجتات (حتى الثابتة) على إعادة البناء مع الحفاظ على حالتها
+    void rebuild(Element e) {
+      e.markNeedsBuild();
+      e.visitChildren(rebuild);
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.rootElement?.visitChildren(rebuild);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
