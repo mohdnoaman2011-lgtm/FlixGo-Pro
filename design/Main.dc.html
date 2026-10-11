@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الرئيسية</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #0B0B0E; color: #E8EDF2; font-family: 'Cairo', sans-serif; overflow: hidden">
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 8px">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <div style="width: 40px; height: 40px; border-radius: 12px; background: #FF8A1F; display: flex; align-items: center; justify-content: center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A0A00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+      </div>
+      <div style="display: flex; flex-direction: column">
+        <span style="font-size: 22px; font-weight: 700; line-height: 1.2">FlixGo</span>
+        <span style="font-size: 13px; color: #9AA7B4; line-height: 1.2">الصق الرابط وابدأ التحميل</span>
+      </div>
+    </div>
+  </header>
+
+  <main style="flex: 1; min-height: 0; overflow-y: auto; padding: 12px 20px 16px; display: flex; flex-direction: column; gap: 16px">
+    <section style="background: #16161B; border: 1px solid #2A2A33; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+      <label for="url" style="font-size: 13px; color: #9AA7B4">رابط الفيديو</label>
+      <div style="display: flex; gap: 8px">
+        <input id="url" type="text" dir="auto" placeholder="الصق الرابط هنا" style="flex: 1; min-width: 0; height: 48px; box-sizing: border-box; padding: 0 14px; border-radius: 14px; border: 1px solid #3A3A45; background: #0B0B0E; color: #E8EDF2; font-family: 'Cairo', sans-serif; font-size: 15px">
+        <button aria-label="لصق من الحافظة" style="width: 48px; height: 48px; flex: none; border-radius: 14px; border: 1px solid #3A3A45; background: #1F1F26; color: #E8EDF2; display: flex; align-items: center; justify-content: center">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6v3H9zM7 6H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-1"/></svg>
+        </button>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <span style="padding: 4px 12px; border-radius: 999px; background: #1F1F26; color: #C8D1DA; font-size: 12px">يوتيوب</span>
+        <span style="padding: 4px 12px; border-radius: 999px; background: #1F1F26; color: #C8D1DA; font-size: 12px">تيك توك</span>
+        <span style="padding: 4px 12px; border-radius: 999px; background: #1F1F26; color: #C8D1DA; font-size: 12px">إنستغرام</span>
+        <span style="padding: 4px 12px; border-radius: 999px; background: #1F1F26; color: #C8D1DA; font-size: 12px">فيسبوك</span>
+        <span style="padding: 4px 12px; border-radius: 999px; background: #1F1F26; color: #C8D1DA; font-size: 12px">إكس</span>
+      </div>
+    </section>
+
+    <section style="background: #16161B; border: 1px solid #2A2A33; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; gap: 12px; align-items: center">
+        <div style="width: 112px; height: 72px; flex: none; border-radius: 12px; background: #1F1F26; display: flex; align-items: center; justify-content: center; position: relative">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="#9AA7B4" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
+          <span style="position: absolute; bottom: 4px; left: 4px; padding: 0 6px; border-radius: 6px; background: #000000B3; font-size: 11px; color: #fff">03:42</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+          <span style="font-size: 15px; font-weight: 600; line-height: 1.4">فيديو تجريبي — عنوان الفيديو</span>
+          <span style="font-size: 12px; color: #9AA7B4">قناة تجريبية</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 6px; padding: 4px; border-radius: 14px; background: #0B0B0E">
+        <sc-for list="{{formats}}" as="f" hint-placeholder-count="2">
+          <button onClick="{{ f.pick }}" style="{{ f.style }}">{{ f.label }}</button>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; gap: 8px">
+        <sc-for list="{{quals}}" as="q" hint-placeholder-count="4">
+          <button onClick="{{ q.pick }}" style="{{ q.style }}">
+            <span style="font-size: 14px; font-weight: 700">{{ q.label }}</span>
+            <span style="font-size: 11px; opacity: 0.8">{{ q.size }}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <button style="height: 52px; border-radius: 16px; border: 0; background: #FF8A1F; color: #1A0A00; font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A0A00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+        تحميل {{ selLabel }}
+      </button>
+    </section>
+
+    <p style="margin: 0; font-size: 12px; line-height: 1.6; color: #93A0AD">حمّل فقط المحتوى الذي تملك حق استخدامه أو الذي يسمح صاحبه بتنزيله.</p>
+  </main>
+
+  <nav style="display: flex; flex: none; height: 72px; background: #101014; border-top: 1px solid #1F1F26; padding: 0 8px">
+    <a href="Main.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #FF8A1F; font-size: 12px; font-weight: 600">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+      الرئيسية
+    </a>
+    <a href="Downloads.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #93A0AD; font-size: 12px; font-weight: 600">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+      التحميلات
+    </a>
+    <a href="Library.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #93A0AD; font-size: 12px; font-weight: 600">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      المكتبة
+    </a>
+    <a href="Settings.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #93A0AD; font-size: 12px; font-weight: 600">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4"/></svg>
+      الإعدادات
+    </a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { f: 'video', q: '720p' };
+  }
+  renderVals() {
+    const s = this.state;
+    const isV = s.f === 'video';
+    const fOn = 'flex:1;height:40px;border:0;border-radius:10px;background:#FF8A1F;color:#1A0A00;font-family:Cairo,sans-serif;font-size:14px;font-weight:700;';
+    const fOff = 'flex:1;height:40px;border:0;border-radius:10px;background:transparent;color:#C8D1DA;font-family:Cairo,sans-serif;font-size:14px;font-weight:600;';
+    const qBase = 'flex:1;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;border-radius:14px;font-family:Cairo,sans-serif;';
+    const qOn = qBase + 'background:#3A1E0C;color:#FF8A1F;border:2px solid #FF8A1F;';
+    const qOff = qBase + 'background:#0B0B0E;color:#C8D1DA;border:1px solid #3A3A45;';
+    const formats = [
+      { id: 'video', label: 'فيديو' },
+      { id: 'audio', label: 'صوت فقط' }
+    ].map((x) => ({
+      label: x.label,
+      style: s.f === x.id ? fOn : fOff,
+      pick: () => this.setState({ f: x.id, q: x.id === 'video' ? '720p' : '128k' })
+    }));
+    const list = isV
+      ? [['360p', '18 MB'], ['480p', '27 MB'], ['720p', '54 MB'], ['1080p', '112 MB']]
+      : [['128k', '3 MB'], ['256k', '6 MB'], ['320k', '8 MB']];
+    const quals = list.map((x) => ({
+      label: x[0],
+      size: x[1],
+      style: s.q === x[0] ? qOn : qOff,
+      pick: () => this.setState({ q: x[0] })
+    }));
+    return { formats, quals, selLabel: s.q };
+  }
+}
+</script>
+</body>
+</html>
