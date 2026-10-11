@@ -95,6 +95,28 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         const Text('FlixGo', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
         Text('الصق الرابط وابدأ التحميل', style: TextStyle(fontSize: 13, color: C.muted)),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 7,
+          runSpacing: 7,
+          children: [
+            for (final name in const ['YouTube', 'TikTok', 'Instagram', 'Facebook', 'X', 'Vimeo', 'Reddit', 'SoundCloud'])
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: C.surface,
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(color: C.border),
+                ),
+                child: Text(name, style: TextStyle(fontSize: 11, color: C.text2, fontWeight: FontWeight.w600)),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'دعم المنصات يتطلب إعداد خادم الاستخراج، وتختلف الصيغ المتاحة حسب الرابط والمنصة.',
+          style: TextStyle(fontSize: 11, color: C.muted, height: 1.5),
+        ),
         const SizedBox(height: 16),
         Panel(children: [
           Text('رابط الفيديو', style: TextStyle(fontSize: 13, color: C.muted)),
