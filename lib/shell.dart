@@ -61,6 +61,7 @@ class _Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: C.splashBg,
       body: Stack(
         children: [
           // المجموعة مرفوعة قليلاً عن المنتصف لتوازن بصري أفضل
@@ -90,8 +91,8 @@ class _Splash extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Text('حمّل فيديوهاتك بسهولة',
-                    style: TextStyle(color: C.muted, fontSize: 15)),
+                Text('حمّل فيديوهاتك بسهولة',
+                    style: TextStyle(color: C.splashMuted, fontSize: 15)),
               ],
             ),
           ),
@@ -105,9 +106,9 @@ class _Splash extends StatelessWidget {
                 height: 4,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(999),
-                  child: const LinearProgressIndicator(
-                    backgroundColor: C.border,
-                    color: C.accent,
+                  child: LinearProgressIndicator(
+                    backgroundColor: C.splashTrack,
+                    color: C.splashAccent,
                   ),
                 ),
               ),
