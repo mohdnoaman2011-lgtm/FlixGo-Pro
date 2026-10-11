@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -69,6 +70,7 @@ class DownloadManager extends ChangeNotifier {
       audioOnly: f.audioOnly,
       path: path,
       total: f.sizeBytes ?? 0,
+      httpHeaders: f.httpHeaders,
     );
     tasks.insert(0, t);
     await _save();
@@ -159,7 +161,10 @@ class DownloadManager extends ChangeNotifier {
         cancelToken: token,
         options: Options(
           responseType: ResponseType.stream,
-          headers: offset > 0 ? {'range': 'bytes=$offset-'} : null,
+          headers: {
+            ...t.httpHeaders,
+            if (offset > 0) 'range': 'bytes=$offset-',
+          },
           validateStatus: (s) => s == 200 || s == 206,
         ),
       );
@@ -202,6 +207,7 @@ class DownloadManager extends ChangeNotifier {
       }
       t.total = t.received;
       t.state = TaskState.done;
+      await _copyToGallery(t);
     } on DioException catch (e) {
       if (!CancelToken.isCancel(e)) {
         t.state = TaskState.failed;
@@ -226,6 +232,20 @@ class DownloadManager extends ChangeNotifier {
       await _save();
       notifyListeners();
       _pump();
+    }
+  }
+
+  /// ينسخ الفيديو (لا الصوت) إلى ألبوم FlixGo في المعرض إن فعّل المستخدم ذلك.
+  /// النسخة الأصلية تبقى في مجلد التطبيق ليعمل فتحها من المكتبة.
+  Future<void> _copyToGallery(DownloadTask t) async {
+    if (!AppSettings.instance.copyToGallery || t.audioOnly) return;
+    try {
+      if (!await Gal.hasAccess(toAlbum: true)) {
+        if (!await Gal.requestAccess(toAlbum: true)) return;
+      }
+      await Gal.putVideo(t.path, album: 'FlixGo');
+    } catch (_) {
+      // صيغة غير مدعومة في المعرض أو رُفض الإذن: لا نفشل التحميل بسبب ذلك.
     }
   }
 
