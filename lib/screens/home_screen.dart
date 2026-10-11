@@ -94,10 +94,10 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(20),
       children: [
         const Text('FlixGo', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-        const Text('الصق الرابط وابدأ التحميل', style: TextStyle(fontSize: 13, color: C.muted)),
+        Text('الصق الرابط وابدأ التحميل', style: TextStyle(fontSize: 13, color: C.muted)),
         const SizedBox(height: 16),
         Panel(children: [
-          const Text('رابط الفيديو', style: TextStyle(fontSize: 13, color: C.muted)),
+          Text('رابط الفيديو', style: TextStyle(fontSize: 13, color: C.muted)),
           Row(spacing: 8, children: [
             Expanded(
               child: TextField(
@@ -113,11 +113,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: C.border2),
+                    borderSide: BorderSide(color: C.border2),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: C.accent),
+                    borderSide: BorderSide(color: C.accent),
                   ),
                 ),
               ),
@@ -130,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 minimumSize: const Size(52, 52),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
-              icon: const Icon(Icons.content_paste, color: C.text),
+              icon: Icon(Icons.content_paste, color: C.text),
             ),
           ]),
           SizedBox(
@@ -143,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               child: _loading
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 22,
                       height: 22,
                       child: CircularProgressIndicator(strokeWidth: 2.5, color: C.accent),
@@ -152,14 +152,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           if (_error != null)
-            Text(_error!, style: const TextStyle(fontSize: 13, color: C.danger, height: 1.6)),
+            Text(_error!, style: TextStyle(fontSize: 13, color: C.danger, height: 1.6)),
         ]),
         if (_info != null) ...[
           const SizedBox(height: 16),
           _buildInfo(_info!),
         ],
         const SizedBox(height: 16),
-        const Text(
+        Text(
           'حمّل فقط المحتوى الذي تملك حق استخدامه أو الذي يسمح صاحبه بتنزيله.',
           style: TextStyle(fontSize: 12, color: C.muted),
         ),
@@ -186,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
             if (info.author != null)
-              Text(info.author!, style: const TextStyle(fontSize: 12, color: C.muted)),
+              Text(info.author!, style: TextStyle(fontSize: 12, color: C.muted)),
           ]),
         ),
       ]),
