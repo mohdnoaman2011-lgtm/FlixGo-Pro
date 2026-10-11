@@ -1,9 +1,11 @@
-FROM node:20-alpine
-RUN apk add --no-cache python3 py3-pip ffmpeg \
-    && python3 -m pip install --no-cache-dir --break-system-packages yt-dlp
+FROM python:3.12-slim
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY package.json server.js ./
-ENV PORT=8080
-EXPOSE 8080
-USER node
-CMD ["node", "server.js"]
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY main.py .
+ENV DOWNLOAD_DIR=/data
+VOLUME /data
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
