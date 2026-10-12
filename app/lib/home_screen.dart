@@ -35,9 +35,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final url = _ctrl.text.trim();
     if (url.isEmpty) return;
     FocusScope.of(context).unfocus();
+    final api = context.read<ApiClient>();
     setState(() => _loading = true);
     try {
-      final info = await context.read<ApiClient>().analyze(url);
+      final info = await api.analyze(url);
       if (!mounted) return;
       await showModalBottomSheet<void>(
         context: context,
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } on ApiException catch (e) {
       _toast(e.message);
     } catch (_) {
-      _toast('تعذّر الاتصال بالخادم');
+      _toast('تعذّر الاتصال بالخادم (${api.baseUrl})');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -90,6 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: TextField(
                         controller: _ctrl,
+                        textDirection: TextDirection.ltr, // الروابط تُكتب من اليسار
                         keyboardType: TextInputType.url,
                         textInputAction: TextInputAction.go,
                         onSubmitted: (_) => _analyze(),
@@ -104,7 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: _paste,
                       tooltip: 'لصق',
                       icon: const Icon(Icons.content_paste),
-                      style: IconButton.styleFrom(fixedSize: const Size(52, 52)),
+                      style: IconButton.styleFrom(
+                        fixedSize: const Size(52, 52),
+                        backgroundColor: scheme.surfaceContainerHighest,
+                        foregroundColor: scheme.onSurface,
+                      ),
                     ),
                   ],
                 ),
@@ -114,6 +120,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 52,
                   child: FilledButton.tonal(
                     onPressed: _loading ? null : _analyze,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: scheme.surfaceContainerHighest,
+                      foregroundColor: scheme.onSurface,
+                    ),
                     child: _loading
                         ? const SizedBox(
                             width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
