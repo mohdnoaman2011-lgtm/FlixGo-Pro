@@ -9,6 +9,7 @@ import 'library_screen.dart';
 import 'notifier.dart';
 import 'settings_screen.dart';
 import 'settings_store.dart';
+import 'splash_screen.dart';
 
 // شغّل بـ: flutter run --dart-define=API_BASE=https://your-server --dart-define=API_KEY=xxxx
 const kApiBase = String.fromEnvironment('API_BASE', defaultValue: 'http://10.0.2.2:8000');
@@ -43,6 +44,10 @@ ThemeData _theme(Brightness b) {
           onSurfaceVariant: Color(0xFF8A8F9C),
           outlineVariant: Color(0xFF26262D),
           surfaceContainerHighest: Color(0xFF22222A),
+          secondary: _orange,
+          onSecondary: Color(0xFF1A0E00),
+          secondaryContainer: Color(0xFF3A2210),
+          onSecondaryContainer: _orange,
         )
       : const ColorScheme.light(
           primary: _orange,
@@ -52,6 +57,10 @@ ThemeData _theme(Brightness b) {
           onSurfaceVariant: Color(0xFF667085),
           outlineVariant: Color(0xFFE1E4EA),
           surfaceContainerHighest: Color(0xFFE4E7EC),
+          secondary: _orange,
+          onSecondary: Color(0xFF1A0E00),
+          secondaryContainer: Color(0xFFFFE6CC),
+          onSecondaryContainer: Color(0xFFB45300),
         );
   return ThemeData(
     useMaterial3: true,
@@ -77,7 +86,7 @@ class FlixGoApp extends StatelessWidget {
       themeMode: context.select<SettingsStore, ThemeMode>((s) => s.themeMode),
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child!),
-      home: const Shell(),
+      home: SplashScreen(next: (_) => const Shell()),
     );
   }
 }
